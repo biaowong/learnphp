@@ -1,0 +1,20 @@
+<?php
+header('content-type:text/html;charset=utf-8');
+$username = 'king';
+echo $username."<br/>";
+echo "我的名字为$username";
+echo '<br/>';
+echo '我的名字是￥username';
+echo '<br/>';
+echo "我的名字为$usernames";
+echo '<br/>';
+echo "我的名字为$username s";
+echo '<hr/>';
+echo "我的名字为{$username}s";
+echo "我的名字为${username}s";
+echo '<br/>';
+echo "我的名字为{ $username }s";
+echo '<br/>';
+echo "我的名字为{ $username}s";
+echo '<br/>';
+echo "我的名字为{$username }s";

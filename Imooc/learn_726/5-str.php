@@ -1,0 +1,22 @@
+<?php
+header('content-type:text/html;charset=utf-8');
+echo 123;
+echo '<br/>';
+echo 34.5;
+echo '<br/>';
+echo true;
+echo '<br/>';
+echo 'A',false,'B';
+echo '<br/>';
+echo 'C',null,'D';
+echo '<br/>';
+$arr = array(1, 2, 3);
+echo $arr;
+echo '<br/>';
+$handle = fopen('1-str.php', 'r');
+echo $handle;
+echo '<hr/>';
+$obj = new stdClass;
+var_dump($obj);
+echo '<hr/>';
+echo $obj;
