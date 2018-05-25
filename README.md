@@ -7,6 +7,7 @@ PHP 实验研究及学习资料
 ```markdown
 - Imooc  慕课网 https://www.imooc.com
   - learn_236  大话PHP设计模式
+  - learn_350  鬼斧神工之正则表达式
   - learn_698  PHP进阶篇-日期时间函数
   - learn_701  PHP进阶篇-GD库图像处理
   - learn_726  PHP进阶篇-字符串操作
