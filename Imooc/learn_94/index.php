@@ -185,11 +185,11 @@ if ($info['file']) {
     <tr>
         <td><?php echo $i; ?></td>
         <td><?php echo $val; ?></td>
-        <td><?php $src=filetype($p) == 'file' ? 'file_ico.png' : 'folder_ioc.pnd'; ?><img src="images/<?php echo $src; ?>" alt="" title="类型"></td>
+        <td><?php $src=filetype($p) == 'file' ? 'file_ico.png' : 'folder_ioc.pnd'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title="类型"></td>
         <td><?php echo transByte(filesize($p)); ?></td>
-        <td><?php $src = is_readable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img src="images/<?php echo $src; ?>" alt="" title=""></td>
-        <td><?php $src = is_writable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img src="images/<?php echo $src; ?>" alt="" title=""></td>
-        <td><?php $src = is_executable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img src="images/<?php echo $src; ?>" alt="" title=""></td>
+        <td><?php $src = is_readable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
+        <td><?php $src = is_writable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
+        <td><?php $src = is_executable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
         <td><?php echo date('Y-m-d H:i:s', filectime($p)); ?></td>
         <td><?php echo date('Y-m-d H:i:s', filemtime($p)); ?></td>
         <td><?php echo date('Y-m-d H:i:s', fileatime($p)); ?></td>
@@ -200,21 +200,21 @@ if ($info['file']) {
         $imageExt = array('gif', 'jpg', 'jpeg', 'png');
         if (in_array($ext, $imageExt)) {
         ?>
-            <a href="#"  onclick="showDetail('<?php echo $val;?>','<?php echo $p;?>')"><img class="small" src="images/show_ico.png"  alt="" title="查看"/></a>|
+            <a href="#"  onclick="showDetail('<?php echo $val;?>','<?php echo $p;?>')"><img class="small" src="images/show_ico.png"  alt="" title="查看"/></a>
         <?php
         }
         else {
         ?>
-            <a href="index.php?act=showContent&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/show_ico.png" title="查看"></a>
+            <a href="index.php?act=showContent&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/show_ico.png" title="查看"></a>
         <?php
         }
         ?>
-            <a href="index.php?act=editContent&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/edit_ico.png" title="编辑"></a>
-            <a href="index.php?act=renameFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/rename_ico.png" title="重命名"></a>
-            <a href="index.php?act=copyFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/copy_ico.png" title="复制"></a>
-            <a href="index.php?act=moveFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/move_ico.png" title="移动"></a>
-            <a href="index.php?act=delFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/del_ico.png" title="删除"></a>
-            <a href="index.php?act=downFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img src="images/download_ico.png" title="下载"></a>
+            <a href="index.php?act=editContent&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/edit_ico.png" title="编辑"></a>
+            <a href="index.php?act=renameFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/rename_ico.png" title="重命名"></a>
+            <a href="index.php?act=copyFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/copy_ico.png" title="复制"></a>
+            <a href="index.php?act=moveFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/move_ico.png" title="移动"></a>
+            <a href="index.php?act=delFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/del_ico.png" title="删除"></a>
+            <a href="index.php?act=downFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/download_ico.png" title="下载"></a>
         </td>
     </tr>
 <?php
