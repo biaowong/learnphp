@@ -3,12 +3,12 @@ namespace IMooc;
 
 class Config implements \ArrayAccess
 {
-    protected $path;
+    protected &path;
     protected $configs = array();
 
-    public function __construct($path)
+    public function __construct(&path)
     {
-        $this->path = $path;
+        $this->path = &path;
     }
 
     public function offsetGet($key)

@@ -4,10 +4,14 @@ require_once 'file.func.php';
 require_once 'common.func.php';
 
 $path = 'file';
-$path = @$_REQUEST['path']?$_REQUEST['path']:$path;
+$path = @$_REQUEST['path'] ? $_REQUEST['path'] : $path;
 $act = @$_REQUEST['act'];
 $filename = @$_REQUEST['filename'];
+$dirname = @$_REQUEST['dirname'];
 $info = readDirectory($path);
+if (!$info) {
+    echo "<script type='text/javascript'>alert('没有文件或目录!');location.href='index.php';</script>";
+}
 $redirect = "index.php?path={$path}";
 
 if ($act == 'createFile') {
@@ -76,7 +80,109 @@ EOF;
 elseif ($act == 'doRename') {
     // 重命名操作
     $newname = @$_REQUEST['newname'];
-    $mes = renameFile($filename, $newname);
+    $mes = renameFile($fsssssssssssilename, $newname);
+    alertMes($mes, $redirect);
+}
+elseif ($act == 'copyFile') {
+     $str = <<<EOF
+    <form action='index.php?act=doCopyFile' method='post'>
+        将文件复制到：<input type='text' name='dstname' placeholder='将文件复制到'>
+        <input type='hidden' name='path' value="{$path}">
+        <input type='hidden' name='filename' value="{$filename}">
+        <input type='submit' value="复制文件">
+    </form>
+EOF;
+    echo $str;
+}
+elseif ($act == 'doCopyFile') {
+    $dstname = @$_REQUEST['dstname'];
+    $mes = copyFile($filename, $path.'/'.$dstname);
+    alertMes($mes, $redirect);
+}
+elseif ($act == 'cutFile') {
+     $str = <<<EOF
+    <form action='index.php?act=doCutFile' method='post'>
+        将文件剪切到：<input type='text' name='dstname' placeholder='将文件剪切到'>
+        <input type='hidden' name='path' value="{$path}">
+        <input type='hidden' name='filename' value="{$filename}">
+        <input type='submit' value="剪切文件">
+    </form>
+EOF;
+    echo $str;
+}
+elseif ($act == 'doCutFile') {
+    $dstname = @$_REQUEST['dstname'];
+    $mes = cutFile($filename, $path.'/'.$dstname);
+    alertMes($mes, $redirect);
+}
+elseif ($act == 'delFile') {
+    // 完成删除文件
+    $mes = delFile($filename);
+    alertMes($mes, $redirect);
+}
+elseif ($act == 'downFile') {
+    // 完成下载文件
+    $mes = downFile($filename);
+}
+elseif ($act == 'copyFolder') {
+     $str = <<<EOF
+    <form action='index.php?act=doCopyFolder' method='post'>
+        将文件夹复制到：<input type='text' name='dstname' placeholder='请填写新文件名'>
+        <input type='hidden' name='path' value="{$path}">
+        <input type='hidden' name='dirname' value="{$dirname}">
+        <input type='submit' value="复制文件夹">
+    </form>
+EOF;
+    echo $str;
+}
+elseif ($act == 'doCopyFolder') {
+    $dstname = $_REQUEST['dstname'];
+    $mes = copyFolder($dirname, $path.'/'.$dstname.'/'.basename($dirname));
+    alertMes($mes, $redirect);
+}
+elseif ($act == 'renameFolder') {
+    // 重命名
+    $str = <<<EOF
+    <form action='index.php?act=doRenameFolder' method='post'>
+        请填写新文件名：<input type='text' name='newname' placeholder='请填写新文件名'>
+        <input type='hidden' name='path' value="{$path}">
+        <input type='hidden' name='dirname' value="{$dirname}">
+        <input type='submit' value="重命名">
+    </form>
+EOF;
+    echo $str;
+}
+elseif ($act == 'doRenameFolder') {
+    // 重命名操作
+    $newname = @$_REQUEST['newname'];
+    $mes = renameFolder($dirname, $path.'/'.$newname);
+    alertMes($mes, $redirect);
+}
+elseif($act == "cutFolder") {
+    $str=<<<EOF
+    <form action="index.php?act=doCutFolder" method="post">
+    将文件夹剪切到：<input type="text" name="dstname" placeholder="将文件剪切到"/>
+    <input type="hidden" name="path" value="{$path}" />
+    <input type='hidden' name='dirname' value='{$dirname}' />
+    <input type="submit" value="剪切文件夹"/>
+    </form>
+EOF;
+    echo $str;
+}
+elseif ($act == "doCutFolder") {
+    //echo "文件夹被剪切了";
+    $dstname = @$_REQUEST['dstname'];
+    $mes = cutFolder($dirname, $path."/".$dstname);
+    alertMes($mes,$redirect);
+}
+elseif ($act == 'delFolder') {
+    // 完成删除文件夹
+    $mes = delFolder($dirname);
+    alertMes($mes, $redirect);
+}
+elseif ($act == '上传文件') {
+    $fileInfo = $_FILES['myFile'];
+    $mes = uploadFile($fileInfo, $path);
     alertMes($mes, $redirect);
 }
 else {
@@ -134,7 +240,7 @@ else {
         <li><a href="#"  onclick="show('createFolder')" title="新建文件夹"><span style="margin-left: 8px; margin-top: 0px; top: 4px;" class="icon icon-small icon-square"><span class="icon-folder"></span></span></a></li>
         <li><a href="#" onclick="show('uploadFile')"title="上传文件"><span style="margin-left: 8px; margin-top: 0px; top: 4px;" class="icon icon-small icon-square"><span class="icon-upload"></span></span></a></li>
         <?php
-        $back=($path=="file")?"file":dirname($path);
+        $back = ($path=="file") ? "file" : dirname($path);
         ?>
         <li><a href="#" title="返回上级目录" onclick="goBack('<?php echo $back;?>')"><span style="margin-left: 8px; margin-top: 0px; top: 4px;" class="icon icon-small icon-square"><span class="icon-arrowLeft"></span></span></a></li>
     </ul>
@@ -177,7 +283,7 @@ else {
         <td>操作</td>
     </tr>
 <?php
-if ($info['file']) {
+if (isset($info['file'])) {
     $i = 1;
     foreach ($info['file'] as $val) {
         $p = $path.'/'.$val;
@@ -185,7 +291,7 @@ if ($info['file']) {
     <tr>
         <td><?php echo $i; ?></td>
         <td><?php echo $val; ?></td>
-        <td><?php $src=filetype($p) == 'file' ? 'file_ico.png' : 'folder_ioc.pnd'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title="类型"></td>
+        <td><?php $src=filetype($p) == 'file' ? 'file_ico.png' : 'folder_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title="类型"></td>
         <td><?php echo transByte(filesize($p)); ?></td>
         <td><?php $src = is_readable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
         <td><?php $src = is_writable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
@@ -212,9 +318,41 @@ if ($info['file']) {
             <a href="index.php?act=editContent&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/edit_ico.png" title="编辑"></a>
             <a href="index.php?act=renameFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/rename_ico.png" title="重命名"></a>
             <a href="index.php?act=copyFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/copy_ico.png" title="复制"></a>
-            <a href="index.php?act=moveFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/move_ico.png" title="移动"></a>
-            <a href="index.php?act=delFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/del_ico.png" title="删除"></a>
+            <a href="index.php?act=cutFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/move_ico.png" title="移动"></a>
+            <a href="#" onclick="delFile('<?php echo $path;?>', '<?php echo $p; ?>');"><img class="small" src="images/del_ico.png" title="删除"></a>
             <a href="index.php?act=downFile&path=<?php echo $path;?>&filename=<?php echo $p; ?>"><img class="small" src="images/download_ico.png" title="下载"></a>
+        </td>
+    </tr>
+<?php
+        $i++;
+    }
+}
+?>
+
+<!-- 读取目录的操作 -->
+<?php
+if (isset($info['dir'])) {
+    foreach ($info['dir'] as $val) {
+        $p = $path.'/'.$val;
+?>
+    <tr>
+        <td><?php echo $i; ?></td>
+        <td><?php echo $val; ?></td>
+        <td><?php $src=filetype($p) == 'file' ? 'file_ico.png' : 'folder_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title="类型"></td>
+        <td><?php echo transByte(dirSize($p)); ?></td>
+        <td><?php $src = is_readable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
+        <td><?php $src = is_writable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
+        <td><?php $src = is_executable($p) ? 'correct_ico.png' : 'error_ico.png'; ?><img class="small" src="images/<?php echo $src; ?>" alt="" title=""></td>
+        <td><?php echo date('Y-m-d H:i:s', filectime($p)); ?></td>
+        <td><?php echo date('Y-m-d H:i:s', filemtime($p)); ?></td>
+        <td><?php echo date('Y-m-d H:i:s', fileatime($p)); ?></td>
+        <td>
+            <a href="index.php?path=<?php echo $p; ?>"><img class="small" src="images/show_ico.png" title="查看"></a>
+            <a href="index.php?act=renameFolder&path=<?php echo $path;?>&dirname=<?php echo $p; ?>"><img class="small" src="images/rename_ico.png" title="重命名"></a>
+            <a href="index.php?act=copyFolder&path=<?php echo $path;?>&dirname=<?php echo $p; ?>"><img class="small" src="images/copy_ico.png" title="复制"></a>
+            <a href="index.php?act=cutFolder&path=<?php echo $path;?>&dirname=<?php echo $p; ?>"><img class="small" src="images/move_ico.png" title="剪切"></a>
+            <a href="#" onclick="delFolder('<?php echo $p;?>','<?php echo $path;?>')"><img class="small" src="images/del_ico.png" title="删除"></a>
+            <a href="index.php?act=downFolder&path=<?php echo $path;?>&dirname=<?php echo $p; ?>"><img class="small" src="images/download_ico.png" title="下载"></a>
         </td>
     </tr>
 <?php
@@ -251,6 +389,16 @@ if ($info['file']) {
             show: "slide",
             hide: "explode"
         });
+    }
+
+    function goBack(back) {
+        location.href = 'index.php?path='+back;
+    }
+
+    function delFolder(dirname, path) {
+        if (window.confirm('您确定要删除吗？删除之后无法恢复。')) {
+            location.href = 'index.php?act=delFolder&path='+path+'&dirname='+dirname;
+        }
     }
 </script>
 </body>
